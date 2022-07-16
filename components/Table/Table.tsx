@@ -1,174 +1,35 @@
-import React from 'react'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-dayjs.extend(relativeTime)
-import {
-  useTable,
-  useFilters,
-  useGlobalFilter,
-  useAsyncDebounce,
-  useSortBy,
-  usePagination,
-  Column,
-  useResizeColumns,
-} from 'react-table'
 import {
   ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ChevronDoubleRightIcon,
 } from '@heroicons/react/solid'
+import React from 'react'
+import { useTable, usePagination, Column } from 'react-table'
 import { Button, PageButton } from '../shared/Button'
-import { SortIcon, SortUpIcon, SortDownIcon } from '../shared/Icons'
 
-// Define a default UI for filtering
-function GlobalFilter({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter,
-}: any) {
-  const count = preGlobalFilteredRows.length
-  const [value, setValue] = React.useState(globalFilter)
-  const onChange = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined)
-  }, 200)
-  return (
-    <label className="flex items-baseline gap-x-2">
-      <span className="text-gray-700">Search: </span>
-      <input
-        type="text"
-        className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value)
-          onChange(e.target.value)
-        }}
-        placeholder={`${count} records...`}
-      />
-    </label>
-  )
+export interface TableProps {
+  data: Array<any>
+  columns: Array<Column>
+  fetchData: any
+  pageCount: any
+  isPaginated: boolean
 }
 
-// This is a custom filter UI for selecting
-// a unique option from a list
-// export function SelectColumnFilter({
-//     column: { filterValue, setFilter, preFilteredRows, id, render },
-// }) {
-//     // Calculate the options for filtering
-//     // using the preFilteredRows
-//     const options = React.useMemo(() => {
-//         const options = new Set()
-//         preFilteredRows.forEach(row => {
-//             options.add(row.values[id])
-//         })
-//         return [...options.values()]
-//     }, [id, preFilteredRows])
-
-//     // Render a multi-select box
-//     return (
-//         <label className="flex gap-x-2 items-baseline">
-//             <span className="text-gray-700">{render("Header")}: </span>
-//             <select
-//                 className="rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-//                 name={id}
-//                 id={id}
-//                 value={filterValue}
-//                 onChange={e => {
-//                     setFilter(e.target.value || undefined)
-//                 }}
-//             >
-//                 <option value="">All</option>
-//                 {options.map((option, i) => (
-//                     <option key={i} value={option}>
-//                         {option}
-//                     </option>
-//                 ))}
-//             </select>
-//         </label>
-//     )
-// }
-
-// export function StatusPill({ value }) {
-//     const status = value ? value.toLowerCase() : "unknown";
-
-//     return (
-//         <span
-//             className={
-//                 classNames(
-//                     "px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm",
-//                     status.startsWith("active") ? "bg-green-100 text-green-800" : null,
-//                     status.startsWith("inactive") ? "bg-yellow-100 text-yellow-800" : null,
-//                     status.startsWith("offline") ? "bg-red-100 text-red-800" : null,
-//                 )
-//             }
-//         >
-//             {status}
-//         </span>
-//     );
-// };
-
-// export function AvatarCell({ value, column, row }) {
-//     return (
-//         <div className="flex items-center">
-//             <div className="flex-shrink-0 h-10 w-10">
-//                 <img className="h-10 w-10 rounded-full" src={row.original[column.imgAccessor]} alt="" />
-//             </div>
-//             <div className="ml-4">
-//                 <div className="text-sm font-medium text-gray-900">{value}</div>
-//                 <div className="text-sm text-gray-500">{row.original[column.emailAccessor]}</div>
-//             </div>
-//         </div>
-//     )
-// }
-export function DayCell({ value, column, row }: any) {
-  const time = dayjs(value)
-  const now = dayjs()
-  return (
-    <div className="flex items-center">
-      <p>{time.from(now)}</p>
-    </div>
-  )
-}
-export function LinkCell({ value, column, row }: any) {
-  return (
-    <div className="flex items-center">
-      <a
-        target="_blank"
-        href={value}
-        className="truncate text-blue-600 underline line-clamp-2 hover:text-blue-800"
-      >
-        {value}
-      </a>
-    </div>
-  )
-}
-export function UrlCell({ value, column, row }: any) {
-  const url = `${process.env.BASEURL}/${value}`
-  return (
-    <div className="flex items-center">
-      <a
-        target="_blank"
-        href={url}
-        className="truncate text-blue-600 underline line-clamp-2 hover:text-blue-800"
-      >
-        {url}
-      </a>
-    </div>
-  )
-}
 function Table({
   columns,
   data,
-}: {
-  data: Array<any>
-  columns: Array<Column>
-}) {
-  // Use the state and functions returned from useTable to build your UI
+  fetchData,
+  pageCount: controlledPageCount,
+  isPaginated = true,
+}: TableProps) {
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
+    rows,
+    state: { pageIndex, pageSize },
     page,
     canPreviousPage,
     canNextPage,
@@ -178,25 +39,29 @@ function Table({
     nextPage,
     previousPage,
     setPageSize,
-    state,
     preGlobalFilteredRows,
     setGlobalFilter,
   }: any = useTable(
     {
       columns,
       data,
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5,
+      },
+      manualPagination: true,
+      manualSortBy: true,
+      autoResetPage: false,
+      pageCount: controlledPageCount,
     },
-    useFilters,
-    useGlobalFilter,
-    useSortBy,
-    usePagination,
-    useResizeColumns
+    usePagination
   )
-
-  // Render the UI for your table
+  React.useEffect(() => {
+    fetchData({ pageIndex, pageSize })
+  }, [fetchData, pageIndex, pageSize])
   return (
     <>
-      <div className="sm:flex sm:gap-x-2">
+      {/* <div className="sm:flex sm:gap-x-2">
         <GlobalFilter
           preGlobalFilteredRows={preGlobalFilteredRows}
           globalFilter={state.globalFilter}
@@ -211,10 +76,10 @@ function Table({
             ) : null
           )
         )}
-      </div>
+      </div> */}
       {/* table */}
-      <div className="mt-4 flex flex-col">
-        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div className="mt-4 flex w-full flex-col">
+        <div className="-my-2 -mx-4 overflow-x-auto scrollbar-hide sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
               <table
@@ -225,30 +90,11 @@ function Table({
                   {headerGroups.map((headerGroup: any) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                       {headerGroup.headers.map((column: any) => (
-                        // Add the sorting props to control sorting. For this example
-                        // we can add them into the header props
                         <th
-                          scope="col"
-                          className="group px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                          {...column.getHeaderProps(
-                            column.getSortByToggleProps()
-                          )}
+                          className="group bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-500"
+                          {...column.getHeaderProps()}
                         >
-                          <div className="flex items-center justify-between">
-                            {column.render('Header')}
-                            {/* Add a sort direction indicator */}
-                            <span>
-                              {column.isSorted ? (
-                                column.isSortedDesc ? (
-                                  <SortDownIcon className="h-4 w-4 text-gray-400" />
-                                ) : (
-                                  <SortUpIcon className="h-4 w-4 text-gray-400" />
-                                )
-                              ) : (
-                                <SortIcon className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100" />
-                              )}
-                            </span>
-                          </div>
+                          {column.render('Header')}
                         </th>
                       ))}
                     </tr>
@@ -259,27 +105,24 @@ function Table({
                   className="divide-y divide-gray-200 bg-white"
                 >
                   {page.map((row: any, i: number) => {
-                    // new
                     prepareRow(row)
                     return (
                       <tr {...row.getRowProps()}>
-                        {row.cells.map((cell: any) => {
-                          return (
-                            <td
-                              {...cell.getCellProps()}
-                              className="whitespace-nowrap px-6 py-4"
-                              role="cell"
-                            >
-                              {cell.column.Cell.name === 'defaultRenderer' ? (
-                                <div className="text-sm text-gray-500">
-                                  {cell.render('Cell')}
-                                </div>
-                              ) : (
-                                cell.render('Cell')
-                              )}
-                            </td>
-                          )
-                        })}
+                        {row.cells.map((cell: any) => (
+                          <td
+                            {...cell.getCellProps()}
+                            className="whitespace-nowrap px-6 py-4 text-sm font-medium"
+                            role="cell"
+                          >
+                            {cell.column.Cell.name === 'defaultRenderer' ? (
+                              <div className="text-sm text-gray-500">
+                                {cell.render('Cell')}
+                              </div>
+                            ) : (
+                              cell.render('Cell')
+                            )}
+                          </td>
+                        ))}
                       </tr>
                     )
                   })}
@@ -290,86 +133,88 @@ function Table({
         </div>
       </div>
       {/* Pagination */}
-      <div className="flex items-center justify-between py-3">
-        <div className="flex flex-1 justify-between sm:hidden">
-          <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
-            Previous
-          </Button>
-          <Button onClick={() => nextPage()} disabled={!canNextPage}>
-            Next
-          </Button>
-        </div>
-        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-          <div className="flex items-baseline gap-x-2">
-            <span className="text-sm text-gray-700">
-              Page <span className="font-medium">{state.pageIndex + 1}</span> of{' '}
-              <span className="font-medium">{pageOptions.length}</span>
-            </span>
-            <label>
-              <span className="sr-only">Items Per Page</span>
-              <select
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                value={state.pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value))
-                }}
-              >
-                {[5, 10, 20].map((pageSize) => (
-                  <option key={pageSize} value={pageSize}>
-                    Show {pageSize}
-                  </option>
-                ))}
-              </select>
-            </label>
+      {isPaginated && (
+        <div className="flex items-center justify-between py-3">
+          <div className="flex flex-1 justify-between sm:hidden">
+            <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+              Previous
+            </Button>
+            <Button onClick={() => nextPage()} disabled={!canNextPage}>
+              Next
+            </Button>
           </div>
-          <div>
-            <nav
-              className="relative z-0 inline-flex -space-x-px rounded-md shadow-sm"
-              aria-label="Pagination"
-            >
-              <PageButton
-                className="rounded-l-md"
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div className="flex items-baseline gap-x-2">
+              <span className="text-sm text-gray-700">
+                Page <span className="font-medium">{pageIndex + 1}</span> of{' '}
+                <span className="font-medium">{pageOptions.length}</span>
+              </span>
+              <label>
+                <span className="sr-only">Items Per Page</span>
+                <select
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value))
+                  }}
+                >
+                  {[5, 10, 20].map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      Show {pageSize}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div>
+              <nav
+                className="relative z-0 inline-flex -space-x-px rounded-md shadow-sm"
+                aria-label="Pagination"
               >
-                <span className="sr-only">First</span>
-                <ChevronDoubleLeftIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </PageButton>
-              <PageButton
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-              >
-                <span className="sr-only">Previous</span>
-                <ChevronLeftIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </PageButton>
-              <PageButton onClick={() => nextPage()} disabled={!canNextPage}>
-                <span className="sr-only">Next</span>
-                <ChevronRightIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </PageButton>
-              <PageButton
-                className="rounded-r-md"
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-              >
-                <span className="sr-only">Last</span>
-                <ChevronDoubleRightIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </PageButton>
-            </nav>
+                <PageButton
+                  className="rounded-l-md"
+                  onClick={() => gotoPage(0)}
+                  disabled={!canPreviousPage}
+                >
+                  <span className="sr-only">First</span>
+                  <ChevronDoubleLeftIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </PageButton>
+                <PageButton
+                  onClick={() => previousPage()}
+                  disabled={!canPreviousPage}
+                >
+                  <span className="sr-only">Previous</span>
+                  <ChevronLeftIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </PageButton>
+                <PageButton onClick={() => nextPage()} disabled={!canNextPage}>
+                  <span className="sr-only">Next</span>
+                  <ChevronRightIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </PageButton>
+                <PageButton
+                  className="rounded-r-md"
+                  onClick={() => gotoPage(pageCount - 1)}
+                  disabled={!canNextPage}
+                >
+                  <span className="sr-only">Last</span>
+                  <ChevronDoubleRightIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </PageButton>
+              </nav>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   )
 }

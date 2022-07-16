@@ -1,11 +1,12 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Column } from 'react-table'
 
 import { Header } from '../components/Layout/Header'
 import { Sidebar } from '../components/Layout/Sidebar'
-import Table, { LinkCell, DayCell, UrlCell } from '../components/Table/Table'
+import { LinkCell, DayCell, UrlCell } from '../components/Table/cells'
+import Table from '../components/Table/Table'
 
 import linkService from '../services/link.service'
 
@@ -31,14 +32,26 @@ const Index: NextPage = () => {
     []
   )
 
-  const [links, setLinks] = useState([])
-  useEffect(() => {
-    linkService.getLinks().then((link_response) => {
-      if (link_response.statusCode === 200) {
-        setLinks(link_response.data.data)
-      }
-    })
-  }, [])
+  const [pageCount, setPageCount] = useState(0)
+  const [data, setData] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const fetchLinks = useCallback(
+    ({ pageSize, pageIndex }) => {
+      linkService
+        .getLinks(pageIndex * pageSize, pageSize)
+        .then((link_response) => {
+          if (link_response.statusCode === 200) {
+            setData(link_response.data.data)
+            setPageCount(
+              Math.ceil(link_response.data.total / link_response.data.limit)
+            )
+          }
+        })
+    },
+    [searchTerm]
+  )
+
   return (
     <div className="h-screen overflow-hidden bg-white">
       <Head>
@@ -48,7 +61,7 @@ const Index: NextPage = () => {
         {/* Header */}
         <Header />
         {/* Sidebar */}
-        {/* <Sidebar /> */}
+        <Sidebar />
         {/* Center */}
         <div className="col-span-4 h-screen w-full overflow-y-scroll px-4 pt-20 pr-10 scrollbar-hide">
           <div className="mt-5 bg-white">
@@ -59,7 +72,13 @@ const Index: NextPage = () => {
             </div>
             <hr className="my-5"></hr>
             <div className="mt-5">
-              <Table columns={columns} data={links} />
+              <Table
+                columns={columns}
+                data={data}
+                pageCount={pageCount}
+                fetchData={fetchLinks}
+                isPaginated={true}
+              />
             </div>
           </div>
         </div>
