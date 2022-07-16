@@ -4,8 +4,8 @@ export const AccountMenu = React.forwardRef(
   ({ ...initProps }: any, ref: any) => {
     return (
       <div>
-        <div className="max-w-md overflow-hidden rounded bg-white shadow-lg sm:max-w-full">
-          <div className="border-b p-6  text-center">
+        <div className="max-w-md overflow-hidden rounded border bg-white shadow-2xl sm:max-w-full">
+          <div className="border-b p-6 text-center">
             <img
               className="mx-auto h-24 w-24 rounded-full"
               src="https://lh3.googleusercontent.com/a-/AOh14GhxFrZThqhiAf90gcAj8gnNdOpWW0Gphr7JuunJ0Sg=s288-p-rw-no"
