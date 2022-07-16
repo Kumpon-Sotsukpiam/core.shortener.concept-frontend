@@ -17,8 +17,8 @@ const Singin: NextPage = () => {
   }, [])
 
   const validationSchema = Yup.object().shape({
-    // firstname: Yup.string().required('Enter your firstname'),
-    // lastname: Yup.string().required('Enter your lastname'),
+    first_name: Yup.string().required('Enter your firstname'),
+    last_name: Yup.string().required('Enter your lastname'),
     email: Yup.string()
       .required('Enter an email address')
       .email('Email is invalid'),
@@ -43,7 +43,7 @@ const Singin: NextPage = () => {
   const { errors } = formState
   const onSubmit = (data: any) => {
     authService
-      .signup(data.email, data.password)
+      .signup(data)
       .then((signup_response) => {
         if (signup_response.statusCode === 201) {
           const returnUrl: any = router.query.returnUrl || '/'
@@ -109,26 +109,26 @@ const Singin: NextPage = () => {
         </div>
         <form className="my-8" onSubmit={handleSubmit(onSubmit)}>
           <div className="relative mb-14 grid gap-5">
-            {/* <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Inputfloating
-                id="firstname"
+                id="first_name"
                 // name="firstname"
                 type="text"
                 placeholder="First name"
                 size="sm"
-                errors={errors.firstname}
-                {...register('firstname')}
+                errors={errors.first_name}
+                {...register('first_name')}
               />
               <Inputfloating
-                id="lastname"
+                id="last_name"
                 // name="lastname"
                 type="text"
                 placeholder="Last name"
                 size="sm"
-                errors={errors.lastname}
-                {...register('lastname')}
+                errors={errors.last_name}
+                {...register('last_name')}
               />
-            </div> */}
+            </div>
             <div className="grid grid-cols-1">
               <Inputfloating
                 id="email"

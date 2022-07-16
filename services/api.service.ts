@@ -21,7 +21,7 @@ const authHeader = (
   // const isApiUrl = url.startsWith(publicRuntimeConfig.apiUrl);
 
   if (token /*&& isApiUrl*/) {
-    return { Authorization: `Basic ${token}` }
+    return { Authorization: `Bearer ${token}` }
   } else {
     return {}
   }
