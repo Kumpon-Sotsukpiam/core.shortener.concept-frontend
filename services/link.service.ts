@@ -2,7 +2,7 @@ import ApiService, { authHeader } from './api.service'
 import { AxiosRequestConfig } from 'axios'
 
 class LinkService {
-  public getLinks(offset: number = 0, limit: number = 5) {
+  public getLinks(offset: number = 0, limit: number = 5, search: string = '') {
     const url = '/api/link'
     const requestOptions: AxiosRequestConfig = {
       method: 'GET',
@@ -15,6 +15,9 @@ class LinkService {
         offset,
         limit,
       },
+    }
+    if (search) {
+      requestOptions.params['search'] = search
     }
     return ApiService(requestOptions)
       .then((response) => {

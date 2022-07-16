@@ -111,7 +111,7 @@ function Table({
                         {row.cells.map((cell: any) => (
                           <td
                             {...cell.getCellProps()}
-                            className="whitespace-nowrap px-6 py-4 text-sm font-medium"
+                            className="max-w-0 whitespace-nowrap px-6 py-4 text-sm font-medium"
                             role="cell"
                           >
                             {cell.column.Cell.name === 'defaultRenderer' ? (

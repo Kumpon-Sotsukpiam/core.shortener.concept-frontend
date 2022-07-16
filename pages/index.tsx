@@ -1,3 +1,4 @@
+import { SearchIcon } from '@heroicons/react/solid'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -39,7 +40,7 @@ const Index: NextPage = () => {
   const fetchLinks = useCallback(
     ({ pageSize, pageIndex }) => {
       linkService
-        .getLinks(pageIndex * pageSize, pageSize)
+        .getLinks(pageIndex * pageSize, pageSize, searchTerm)
         .then((link_response) => {
           if (link_response.statusCode === 200) {
             setData(link_response.data.data)
@@ -71,6 +72,14 @@ const Index: NextPage = () => {
               </p>
             </div>
             <hr className="my-5"></hr>
+            <div className="inline-flex w-full">
+              <input
+                type="text"
+                placeholder="Search"
+                className="text-md w-full max-w-xl rounded-md bg-gray-100 py-3 px-5 text-gray-800 focus:bg-white focus:text-gray-800 focus:shadow-lg focus:outline-none"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
             <div className="mt-5">
               <Table
                 columns={columns}
