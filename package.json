@@ -12,6 +12,7 @@
     "@hookform/resolvers": "^2.8.8",
     "axios": "^0.27.2",
     "axios-hooks": "^3.0.2",
+    "dayjs": "^1.11.3",
     "dotenv": "^16.0.0",
     "flowbite": "^1.4.5",
     "next": "latest",
@@ -24,6 +25,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@tailwindcss/line-clamp": "^0.4.0",
     "@types/node": "17.0.4",
     "@types/react": "17.0.38",
     "@types/react-table": "^7.7.11",
