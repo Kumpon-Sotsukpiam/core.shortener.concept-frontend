@@ -17,7 +17,7 @@ export function LinkCell({ value, column, row }: any) {
       <a
         target="_blank"
         href={value}
-        className="truncate text-blue-600 underline  hover:text-blue-800"
+        className="truncate text-blue-600 hover:text-blue-800"
       >
         {value}
       </a>
@@ -31,7 +31,7 @@ export function UrlCell({ value, column, row }: any) {
       <a
         target="_blank"
         href={url}
-        className="truncate text-blue-600 underline line-clamp-2 hover:text-blue-800"
+        className="truncate text-blue-600 line-clamp-2 hover:text-blue-800"
       >
         {url}
       </a>

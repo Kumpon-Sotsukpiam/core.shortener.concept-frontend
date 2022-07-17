@@ -24,14 +24,14 @@ export const AccountMenu = React.forwardRef(
             />
             <p className="pt-2 text-lg font-semibold">Kumpon Sotsukpiam</p>
             <p className="text-sm text-gray-600">{userService.email}</p>
-            {/* <div className="mt-5">
-            <a
-              href="#"
-              className="rounded-full border py-2 px-4 text-xs font-semibold text-gray-700"
-            >
-              Manage your Google Account
-            </a>
-          </div> */}
+            <div className="mt-5">
+              <a
+                href="#"
+                className="rounded-full border py-2 px-4 text-xs font-semibold text-gray-700"
+              >
+                Manage your Google Account
+              </a>
+            </div>
           </div>
           {/* <div className="border-b">
           <a href="#" className="flex px-6 py-3 hover:bg-gray-200">
@@ -69,15 +69,14 @@ export const AccountMenu = React.forwardRef(
               </a>
             </div>
           </div>
-
-          {/* <div className="px-6 py-4">
-          <span className="mr-2 inline-block rounded-full px-3 py-1 text-xs font-semibold text-gray-600">
-            Privacy Policy
-          </span>
-          <span className="mr-2 inline-block rounded-full px-3 py-1 text-xs font-semibold text-gray-600">
-            Terms of Service
-          </span>
-        </div> */}
+          <div className="px-6 py-4">
+            <span className="mr-2 inline-block rounded-full px-3 py-1 text-xs font-semibold text-gray-600">
+              Privacy Policy
+            </span>
+            <span className="mr-2 inline-block rounded-full px-3 py-1 text-xs font-semibold text-gray-600">
+              Terms of Service
+            </span>
+          </div>
         </div>
       </div>
     )

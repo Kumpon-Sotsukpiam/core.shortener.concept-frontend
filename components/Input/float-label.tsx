@@ -7,6 +7,7 @@ interface InputfloatingProps {
   placeholder: string
   size?: size | string
   errors?: any
+  onChange?: any
 }
 enum size {
   'sm',
@@ -21,6 +22,7 @@ export const Inputfloating = React.forwardRef(
       placeholder,
       size,
       errors,
+      onChange,
       ...initProps
     }: InputfloatingProps,
     ref: any
@@ -51,6 +53,7 @@ export const Inputfloating = React.forwardRef(
                     focus:ring-1
                     ${classNameInput}`}
           placeholder=" "
+          onChange={onChange}
           {...initProps}
         />
         <label

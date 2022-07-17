@@ -28,7 +28,6 @@ function Table({
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    rows,
     state: { pageIndex, pageSize },
     page,
     canPreviousPage,
@@ -39,8 +38,6 @@ function Table({
     nextPage,
     previousPage,
     setPageSize,
-    preGlobalFilteredRows,
-    setGlobalFilter,
   }: any = useTable(
     {
       columns,
@@ -57,26 +54,22 @@ function Table({
     usePagination
   )
   React.useEffect(() => {
+    const current_page_size = localStorage.getItem('pagesize')
+    if (current_page_size) {
+      setPageSize(current_page_size)
+    } else {
+      localStorage.setItem('pagesize', pageSize)
+    }
+  }, [])
+  React.useEffect(() => {
+    localStorage.setItem('pagesize', pageSize)
+  }, [pageSize])
+
+  React.useEffect(() => {
     fetchData({ pageIndex, pageSize })
   }, [fetchData, pageIndex, pageSize])
   return (
     <>
-      {/* <div className="sm:flex sm:gap-x-2">
-        <GlobalFilter
-          preGlobalFilteredRows={preGlobalFilteredRows}
-          globalFilter={state.globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
-        {headerGroups.map((headerGroup: any) =>
-          headerGroup.headers.map((column: any) =>
-            column.Filter ? (
-              <div className="mt-2 sm:mt-0" key={column.id}>
-                {column.render('Filter')}
-              </div>
-            ) : null
-          )
-        )}
-      </div> */}
       {/* table */}
       <div className="mt-4 flex w-full flex-col">
         <div className="-my-2 -mx-4 overflow-x-auto scrollbar-hide sm:-mx-6 lg:-mx-8">
@@ -111,7 +104,7 @@ function Table({
                         {row.cells.map((cell: any) => (
                           <td
                             {...cell.getCellProps()}
-                            className="max-w-0 whitespace-nowrap px-6 py-4 text-sm font-medium"
+                            className="max-w-0 whitespace-nowrap px-6 py-4 text-sm"
                             role="cell"
                           >
                             {cell.column.Cell.name === 'defaultRenderer' ? (
