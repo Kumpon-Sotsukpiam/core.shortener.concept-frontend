@@ -1,13 +1,57 @@
 import dayjs from 'dayjs'
+import { useRecoilState } from 'recoil'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
+import { TrashIcon } from '@heroicons/react/outline'
+import { linkState } from '../../../recoil/atoms/atom'
+import { classNames } from '../../shared/Utils'
+
+import linkService from '../../../services/link.service'
+
+export function ConfigCell({ value }: any) {
+  const [links, setLinks]: any = useRecoilState(linkState)
+  return (
+    <div className="flex items-center">
+      <TrashIcon
+        className="h-5 cursor-pointer text-red-600"
+        onClick={() => {
+          linkService.deleteLink(value).then((delete_link_response) => {
+            if (delete_link_response.statusCode === 200) {
+              setLinks(links.filter((link: any) => link.id !== value))
+            }
+          })
+        }}
+      />
+    </div>
+  )
+}
 export function DayCell({ value, column, row }: any) {
   const time = dayjs(value)
   const now = dayjs()
   return (
     <div className="flex items-center">
       <p>{time.from(now)}</p>
+    </div>
+  )
+}
+export function ExpireCell({ value, column, row }: any) {
+  const time = dayjs(value)
+  const now = dayjs()
+  const isExpire = value ? (time.diff(now) < 0 ? true : false) : false
+  const willExpire = value ? (time.diff(now) < 0 ? false : true) : false
+  return (
+    <div className="flex items-center">
+      <span
+        className={classNames(
+          'leading-wide rounded-full px-3 py-1 text-xs font-bold uppercase shadow-sm',
+          !isExpire ? 'bg-green-100 text-green-800' : null,
+          willExpire ? 'bg-yellow-100 text-yellow-800' : null,
+          isExpire ? 'bg-red-100 text-red-800' : null
+        )}
+      >
+        {value ? time.from(now) : 'never'}
+      </span>
     </div>
   )
 }

@@ -19,7 +19,6 @@ const authHeader = (
 } => {
   const token = authService.token
   // const isApiUrl = url.startsWith(publicRuntimeConfig.apiUrl);
-
   if (token /*&& isApiUrl*/) {
     return { Authorization: `Bearer ${token}` }
   } else {

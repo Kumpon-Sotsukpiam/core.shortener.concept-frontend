@@ -8,8 +8,6 @@ export const RouterGuard = ({ children }: any) => {
 
   useEffect(() => {
     authCheck(router.asPath)
-    console.log('active')
-
     const hideContent = () => setAuthorized(false)
 
     router.events.on('routeChangeStart', hideContent)

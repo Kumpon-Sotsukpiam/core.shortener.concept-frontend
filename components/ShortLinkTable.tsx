@@ -1,10 +1,18 @@
 import type { NextPage } from 'next'
 import React, { useCallback, useState } from 'react'
 import { Column } from 'react-table'
+import { useRecoilState } from 'recoil'
 
-import { LinkCell, DayCell, UrlCell } from '../components/Table/cells'
+import {
+  LinkCell,
+  DayCell,
+  UrlCell,
+  ExpireCell,
+  ConfigCell,
+} from '../components/Table/cells'
 import Table from '../components/Table/Table'
 import linkService from '../services/link.service'
+import { linkState } from '../recoil/atoms/atom'
 
 export const ShortLinkTable: NextPage = () => {
   const columns: Array<Column> = React.useMemo(
@@ -15,7 +23,7 @@ export const ShortLinkTable: NextPage = () => {
         Cell: LinkCell,
       },
       {
-        Header: 'Craeted at',
+        Header: 'Craeted',
         accessor: 'created_at',
         Cell: DayCell,
       },
@@ -24,12 +32,26 @@ export const ShortLinkTable: NextPage = () => {
         accessor: 'address',
         Cell: UrlCell,
       },
+      {
+        Header: 'Expire IN',
+        accessor: 'expire_in',
+        Cell: ExpireCell,
+      },
+      {
+        Header: 'Views',
+        accessor: 'visit_count',
+      },
+      {
+        Header: ' ',
+        accessor: 'id',
+        Cell: ConfigCell,
+      },
     ],
     []
   )
 
   const [pageCount, setPageCount] = useState(0)
-  const [data, setData] = useState([])
+  const [links, setlinks] = useRecoilState(linkState)
   const [searchTerm, setSearchTerm] = useState('')
 
   const fetchLinks = useCallback(
@@ -38,7 +60,7 @@ export const ShortLinkTable: NextPage = () => {
         .getLinks(pageIndex * pageSize, pageSize, searchTerm)
         .then((link_response) => {
           if (link_response.statusCode === 200) {
-            setData(link_response.data.data)
+            setlinks(link_response.data.data)
             setPageCount(
               Math.ceil(link_response.data.total / link_response.data.limit)
             )
@@ -67,7 +89,7 @@ export const ShortLinkTable: NextPage = () => {
       <div className="mt-5">
         <Table
           columns={columns}
-          data={data}
+          data={links}
           pageCount={pageCount}
           fetchData={fetchLinks}
           isPaginated={true}

@@ -30,5 +30,23 @@ class LinkService {
         return err.response.data
       })
   }
+  public deleteLink(id: string) {
+    const url = `/api/link/${id}`
+    const requestOptions: AxiosRequestConfig = {
+      method: 'DELETE',
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeader(url),
+      },
+    }
+    return ApiService(requestOptions)
+      .then((response) => {
+        return response.data
+      })
+      .catch((err) => {
+        return err.response.data
+      })
+  }
 }
 export default new LinkService()
