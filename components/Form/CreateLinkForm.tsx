@@ -6,6 +6,7 @@ import { useState } from 'react'
 
 import linkService from '../../services/link.service'
 import { linkState } from '../../recoil/atoms/atom'
+import { ChevronDoubleRightIcon } from '@heroicons/react/solid'
 
 export const CreateLinkForm = () => {
   const [links, setlinks] = useRecoilState<any>(linkState)
@@ -48,15 +49,22 @@ export const CreateLinkForm = () => {
       <div className="w-full lg:px-36">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-5">
-            <div>
+            <div
+              className="flex w-full items-center 
+                  rounded-full border 
+                  border-gray-200 px-5
+                  py-3 focus-within:shadow-lg hover:shadow-lg"
+            >
               <input
                 id="url"
                 type="text"
                 placeholder="Pasts your long URL."
-                className="
-							text-md w-full rounded-full bg-gray-100 py-4 px-5 text-gray-800
-							focus:bg-white focus:text-gray-800 focus:shadow-lg focus:outline-none"
+                className="flex-grow focus:outline-none"
                 {...register('url')}
+              />
+              <ChevronDoubleRightIcon
+                className="ml-3 h-5 cursor-pointer hover:text-blue-500"
+                onClick={handleSubmit(onSubmit)}
               />
             </div>
             <div className="flex h-5 items-center gap-3">
@@ -76,34 +84,34 @@ export const CreateLinkForm = () => {
               </label>
             </div>
             {isShow && (
-              <div className="flex gap-10">
-                <input
-                  id="custom_url"
-                  type="text"
-                  placeholder="Custom URL"
-                  className="
-							text-md w-full rounded-full bg-gray-100 py-4 px-5 text-gray-800
-							focus:bg-white focus:text-gray-800 focus:shadow-lg focus:outline-none"
-                  {...register('custom_url')}
-                />
-                <input
-                  id="url"
-                  type="password"
-                  placeholder="Password"
-                  className="
-							text-md w-full rounded-full bg-gray-100 py-4 px-5 text-gray-800
-							focus:bg-white focus:text-gray-800 focus:shadow-lg focus:outline-none"
-                  {...register('password')}
-                />
-                <input
-                  id="expire_in"
-                  type="date"
-                  placeholder="Expire In"
-                  className="
-							text-md w-full rounded-full bg-gray-100 py-4 px-5 text-gray-800
-							focus:bg-white focus:text-gray-800 focus:shadow-lg focus:outline-none"
-                  {...register('expire_in')}
-                />
+              <div className="flex flex-col justify-center gap-3 md:flex-row">
+                <div className="flex w-full items-center  rounded-full border  border-gray-200 px-5 py-3 focus-within:shadow-lg hover:shadow-lg">
+                  <input
+                    id="custom_url"
+                    type="text"
+                    placeholder="Custom URL"
+                    className="flex-grow focus:outline-none"
+                    {...register('custom_url')}
+                  />
+                </div>
+                <div className="flex w-full items-center  rounded-full border  border-gray-200 px-5 py-3 focus-within:shadow-lg hover:shadow-lg">
+                  <input
+                    id="url"
+                    type="password"
+                    placeholder="Password"
+                    className="flex-grow focus:outline-none"
+                    {...register('password')}
+                  />
+                </div>
+                <div className="flex w-full items-center  rounded-full border border-gray-200 px-5 py-3 focus-within:shadow-lg hover:shadow-lg">
+                  <input
+                    id="expire_in"
+                    type="date"
+                    placeholder="Expire In"
+                    className="flex-grow bg-white focus:outline-none"
+                    {...register('expire_in')}
+                  />
+                </div>
               </div>
             )}
           </div>
