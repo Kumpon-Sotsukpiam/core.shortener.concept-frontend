@@ -16,7 +16,7 @@ const Index: NextPage = () => {
         {/* Header */}
         <Header />
         {/* Sidebar */}
-        {/* <Sidebar /> */}
+        <Sidebar />
         {/* Center */}
         <div className="h-screen w-full overflow-y-scroll px-4 pt-20 pr-5 scrollbar-hide">
           <CreateLinkForm />

@@ -48,7 +48,12 @@ class LinkService {
         return err.response.data
       })
   }
-  public createLink(data: { target: string }) {
+  public createLink(data: {
+    target: string
+    address?: string
+    password?: string
+    expire_in?: Date
+  }) {
     const url = '/api/link'
     const requestOptions: AxiosRequestConfig = {
       method: 'POST',
