@@ -48,5 +48,24 @@ class LinkService {
         return err.response.data
       })
   }
+  public createLink(data: { target: string }) {
+    const url = '/api/link'
+    const requestOptions: AxiosRequestConfig = {
+      method: 'POST',
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeader(url),
+      },
+      data,
+    }
+    return ApiService(requestOptions)
+      .then((response) => {
+        return response.data
+      })
+      .catch((err) => {
+        return err.response.data
+      })
+  }
 }
 export default new LinkService()

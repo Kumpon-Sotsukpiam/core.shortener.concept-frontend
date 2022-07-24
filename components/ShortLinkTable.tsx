@@ -28,14 +28,14 @@ export const ShortLinkTable: NextPage = () => {
         Cell: DayCell,
       },
       {
-        Header: 'Short URL',
-        accessor: 'address',
-        Cell: UrlCell,
-      },
-      {
         Header: 'Expire IN',
         accessor: 'expire_in',
         Cell: ExpireCell,
+      },
+      {
+        Header: 'Short URL',
+        accessor: 'address',
+        Cell: UrlCell,
       },
       {
         Header: 'Views',
@@ -82,7 +82,7 @@ export const ShortLinkTable: NextPage = () => {
         <input
           type="text"
           placeholder="Search"
-          className="text-md w-full max-w-xl rounded-md bg-gray-100 py-2 px-5 text-gray-800 focus:bg-white focus:text-gray-800 focus:shadow-lg focus:outline-none"
+          className="text-md w-full max-w-xl rounded-full bg-gray-100 py-2 px-5 text-gray-800 focus:bg-white focus:text-gray-800 focus:shadow-lg focus:outline-none"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>

@@ -31,7 +31,7 @@ export function DayCell({ value, column, row }: any) {
   const now = dayjs()
   return (
     <div className="flex items-center">
-      <p>{time.from(now)}</p>
+      <p className="truncate">{time.from(now)}</p>
     </div>
   )
 }
