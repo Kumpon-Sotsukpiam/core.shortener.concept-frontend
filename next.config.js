@@ -3,14 +3,11 @@
 require("dotenv").config();
 
 module.exports = {
+  output: 'standalone',
+  reactStrictMode: true,
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
     ignoreBuildErrors: true,
   },
-  reactStrictMode: true,
   images: {
     domains: ['www.google.com', 'www.gstatic.com']
   },
